@@ -177,9 +177,9 @@ export default function SearchSuggestions({
   return (
     <div
       ref={containerRef}
-      className="absolute w-full top-full z-60 bg-white dark:bg-gray-800 rounded-b-lg shadow-lg overflow-hidden isolate"
+      className="absolute left-0 right-0 top-full z-[70] bg-white dark:bg-gray-800 rounded-b-lg shadow-lg overflow-hidden isolat"
     >
-      <div className="max-h-80 overflow-y-auto">
+      <div className="max-h-80 overflow-y-auto min-w-0">
         {suggestions.map((suggestion, index) => (
           <button
             key={`suggestion-${suggestion.text}-${index}`}
