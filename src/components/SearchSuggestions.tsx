@@ -1,18 +1,14 @@
 'use client';
-
 import { useCallback, useEffect, useRef, useState } from 'react';
-
 interface SearchSuggestionsProps {
   query: string;
   isVisible: boolean;
   onSelect: (suggestion: string) => void;
   onClose: () => void;
 }
-
 interface SuggestionItem {
   text: string;
 }
-
 export default function SearchSuggestions({
   query,
   isVisible,
@@ -25,7 +21,6 @@ export default function SearchSuggestions({
   const containerRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   // 流式获取建议
   const fetchSuggestionsFromAPI = useCallback(async (searchQuery: string) => {
     if (abortControllerRef.current) {
@@ -80,7 +75,6 @@ export default function SearchSuggestions({
     }
   }, []);
   
-
   // 加载搜索建议设置
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -104,7 +98,6 @@ export default function SearchSuggestions({
       };
     }
   }, []);
-
   // 防抖触发
   const debouncedFetchSuggestions = useCallback(
     (searchQuery: string) => {
@@ -121,7 +114,6 @@ export default function SearchSuggestions({
     },
     [isVisible, isEnabled, fetchSuggestionsFromAPI]
   );
-
   useEffect(() => {
     if (!query.trim() || !isVisible || !isEnabled) {
       setSuggestions([]);
@@ -129,18 +121,15 @@ export default function SearchSuggestions({
       return;
     }
     debouncedFetchSuggestions(query);
-
     return () => {
       if (debounceTimer.current) clearTimeout(debounceTimer.current);
-      if (abortControllerRef.current) abortControllerRef.current.abort();
+      if (abortControllerRef.current) abortControllerRef.current;
     };
   }, [query, isVisible, isEnabled, debouncedFetchSuggestions]);
-
   // 键盘导航
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isVisible || suggestions.length === 0) return;
-
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
@@ -168,11 +157,9 @@ export default function SearchSuggestions({
           break;
       }
     };
-
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isVisible, query, suggestions, selectedIndex, onSelect, onClose]);
-
   // 点击外部关闭
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -183,32 +170,31 @@ export default function SearchSuggestions({
         onClose();
       }
     };
-
     if (isVisible) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isVisible, onClose]);
-
   if (!isVisible || !isEnabled || suggestions.length === 0) return null;
-
   return (
     <div
       ref={containerRef}
-      className="absolute top-full left-0 right-0 z-50 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 max-h-80 overflow-y-auto"
+      className="absolute w-full top-full z-60 bg-white dark:bg-gray-800 rounded-b-lg shadow-lg overflow-hidden isolate"
     >
-      {suggestions.map((suggestion, index) => (
-        <button
-          key={`suggestion-${suggestion.text}-${index}`}
-          onClick={() => onSelect(suggestion.text)}
-          onMouseEnter={() => setSelectedIndex(index)}
-          className={`w-full px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150 flex items-center gap-3 ${
-            selectedIndex === index ? 'bg-gray-100 dark:bg-gray-700' : ''
-          }`}
-        >
-          <span className="flex-1 text-sm text-gray-700 dark:text-gray-300 truncate">
-            {suggestion.text}
-          </span>
-        </button>
-      ))}
+      <div className="max-h-80 overflow-y-auto">
+        {suggestions.map((suggestion, index) => (
+          <button
+            key={`suggestion-${suggestion.text}-${index}`}
+            onClick={() => onSelect(suggestion.text)}
+            onMouseEnter={() => setSelectedIndex(index)}
+            className={`w-full px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150 flex items-center gap-3 ${
+              selectedIndex === index ? 'bg-gray-100 dark:bg-gray-700' : ''
+            }`}
+          >
+            <span className="flex-1 text-sm text-gray-700 dark:text-gray-300 truncate">
+              {suggestion.text}
+            </span>
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
