@@ -579,7 +579,7 @@ const sortedAggregatedResults: { exact: [string, SearchResult[]][], others: [str
 
   return (
     <PageLayout activePath="/search">
-      <div className="px-4 sm:px-10 py-4 sm:py-8 overflow-visible mb-10">
+      <div className="px-4 sm:px-10 pt-20 sm:pt-24 pb-4 sm:pb-8 overflow-visible mb-10">
         {/* 移动端搜索框和搜索源选择器 */}
         <div className="mb-7 max-w-2xl mx-auto md:hidden">
           <div className="flex items-center">
